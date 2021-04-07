@@ -10,6 +10,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     majorVersion                     := 0,
     scalaVersion                     := "2.12.12",
+    makePublicallyAvailableOnBintray := false,
     libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig",
