@@ -1,6 +1,5 @@
 # microservice specific routes
 
-->         /govuk-frontend          govuk.Routes
 ->         /hmrc-frontend           hmrcfrontend.Routes
 GET        /hello-world             uk.gov.hmrc.buildanddeploycanaryservice.controllers.HelloWorldController.helloWorld
 GET        /language/:lang          uk.gov.hmrc.buildanddeploycanaryservice.controllers.LanguageSwitchController.switchToLanguage(lang: String)
