@@ -29,4 +29,5 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val cy: String            = "cy"
   val defaultLanguage: Lang = Lang(en)
 
+  val myString: String = config.getOptional[String]("some.config.key").getOrElse("")
 }
