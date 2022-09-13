@@ -30,4 +30,5 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val defaultLanguage: Lang = Lang(en)
 
   val myString: String = config.getOptional[String]("some.config.key").getOrElse("")
+  val shouldFail: String = config.getOptional[String]("another.config.key").getOrElse("false")
 }

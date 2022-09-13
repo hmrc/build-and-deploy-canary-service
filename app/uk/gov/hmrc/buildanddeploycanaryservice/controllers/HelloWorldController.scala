@@ -31,7 +31,9 @@ class HelloWorldController @Inject()(
   mcc: MessagesControllerComponents,
   helloWorldPage: HelloWorldPage)
     extends FrontendController(mcc) {
-
+  if (appConfig.shouldFail == "true") {
+    sys.error("Boom")
+  }
   implicit val config: AppConfig = appConfig
 
   val helloWorld: Action[AnyContent] = Action.async { implicit request =>
