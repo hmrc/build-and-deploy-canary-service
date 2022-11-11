@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.buildanddeploycanaryservice.controllers
 
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -52,5 +53,22 @@ class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
       contentType(result) shouldBe Some("text/html")
       charset(result)     shouldBe Some("utf-8")
     }
+  }
+}
+
+class ConfigurationSpec extends AnyFlatSpec {
+
+  private val env           = Environment.simple()
+  private val configuration = Configuration.load(env)
+
+  private val serviceConfig = new ServicesConfig(configuration)
+  private val appConfig     = new AppConfig(configuration, serviceConfig)
+
+  it should "get the required env var value" in {
+    assert("test" === System.getenv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR"))
+  }
+
+  it should "load the required env var into config" in {
+    assert("test" === appConfig.requiredEnvVar)
   }
 }

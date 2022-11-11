@@ -31,4 +31,5 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val myString: String = config.getOptional[String]("some.config.key").getOrElse("")
   val shouldFail: String = config.getOptional[String]("another.config.key").getOrElse("false")
+  val requiredEnvVar: String = System.getenv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR")
 }
