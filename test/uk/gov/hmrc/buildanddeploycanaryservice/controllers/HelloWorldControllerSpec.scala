@@ -27,8 +27,11 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig
 import uk.gov.hmrc.buildanddeploycanaryservice.views.html.HelloWorldPage
+import za.co.absa.commons.scalatest.EnvFixture
 
-class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
+class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with EnvFixture {
+  setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
+
   private val fakeRequest = FakeRequest("GET", "/")
 
   private val env           = Environment.simple()
