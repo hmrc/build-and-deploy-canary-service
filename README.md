@@ -22,6 +22,20 @@ After updating either the sbt version, sbt plugins, or service dependencies conf
 
     sbt clean test
 
+## Smoke testing configuration
+
+In order to confirm that platform tooling is properly passing configuration items to microservices, we check for the presence of various configuration items on launch. If any of these configuration items are missing, an exception will be thrown.
+
+```yaml
+environment:
+    SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR: "value not important"
+
+hmrc_config:
+    service.will.fail.to.start.without.this.sys.prop: "value not important"
+```
+
+You can simulate the failure of a microservice bootstrap by removing any of these values from configuration and performing a deployment.
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
