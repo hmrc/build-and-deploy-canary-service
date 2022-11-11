@@ -33,7 +33,7 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
     setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
 
     configuration = Configuration.load(env) ++ Configuration(
-        "service.will.fail.to.start.without.this.sys.prop" -> 420
+        "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
     )
     serviceConfig = new ServicesConfig(configuration)
     appConfig = new AppConfig(configuration, serviceConfig)
@@ -44,7 +44,7 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
 
   it should "throw an exception when the required env var is not set" in {
     configuration = Configuration.load(env) ++ Configuration(
-        "service.will.fail.to.start.without.this.sys.prop" -> 420
+        "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
     )
     serviceConfig = new ServicesConfig(configuration)
 

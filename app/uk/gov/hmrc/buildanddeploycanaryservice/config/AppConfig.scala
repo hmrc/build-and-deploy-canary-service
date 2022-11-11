@@ -32,13 +32,13 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val myString: String = config.getOptional[String]("some.config.key").getOrElse("")
   val shouldFail: String = config.getOptional[String]("another.config.key").getOrElse("false")
   val requiredEnvVar: String = sys.env.getOrElse("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "")
-  val requiredSystemProperty: Int = config.getOptional[Int]("service.will.fail.to.start.without.this.sys.prop").getOrElse(0)
+  val requiredSystemProperty: String = config.getOptional[String]("service.will.fail.to.start.without.this.sys.prop").getOrElse("")
 
   if (requiredEnvVar == "") {
     throw new Exception
   }
 
-  if (requiredSystemProperty == 0) {
+  if (requiredSystemProperty == "") {
     throw new Exception
   }
 }
