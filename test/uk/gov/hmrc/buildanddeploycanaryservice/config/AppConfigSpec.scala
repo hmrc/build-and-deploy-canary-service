@@ -23,11 +23,11 @@ import uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig
 import za.co.absa.commons.scalatest.EnvFixture
 
 class AppConfigSpec extends AnyFlatSpec with EnvFixture {
-    private val env           = Environment.simple()
-    private val configuration = Configuration.load(env)
-    private val serviceConfig = new ServicesConfig(configuration)
+  private val env           = Environment.simple()
+  private val configuration = Configuration.load(env)
+  private val serviceConfig = new ServicesConfig(configuration)
 
-    private var appConfig: AppConfig = _
+  private var appConfig: AppConfig = _
 
   it should "load config okay when required settings are present" in {
     setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
