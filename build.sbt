@@ -5,8 +5,6 @@ val appName = "build-and-deploy-canary-service"
 
 val silencerVersion = "1.7.8"
 
-envVars in Test := Map("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR" -> "test")
-
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
