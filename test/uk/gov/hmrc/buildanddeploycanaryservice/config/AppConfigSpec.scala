@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.buildanddeploycanaryservice.controllers
+package uk.gov.hmrc.buildanddeploycanaryservice.config
 
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.Status
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig
-import uk.gov.hmrc.buildanddeploycanaryservice.views.html.HelloWorldPage
+import za.co.absa.commons.scalatest.EnvFixture
 
-class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
-  private val fakeRequest = FakeRequest("GET", "/")
+class ConfigurationSpec extends AnyFlatSpec with EnvFixture {
+  setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
 
   private val env           = Environment.simple()
   private val configuration = Configuration.load(env)
@@ -37,20 +32,11 @@ class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
   private val serviceConfig = new ServicesConfig(configuration)
   private val appConfig     = new AppConfig(configuration, serviceConfig)
 
-  val helloWorldPage: HelloWorldPage = app.injector.instanceOf[HelloWorldPage]
+  it should "get the required env var value" in {
+    assert("test" === System.getenv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR"))
+  }
 
-  private val controller = new HelloWorldController(appConfig, stubMessagesControllerComponents(), helloWorldPage)
-
-  "GET /" should {
-    "return 200" in {
-      val result = controller.helloWorld(fakeRequest)
-      status(result) shouldBe Status.OK
-    }
-
-    "return HTML" in {
-      val result = controller.helloWorld(fakeRequest)
-      contentType(result) shouldBe Some("text/html")
-      charset(result)     shouldBe Some("utf-8")
-    }
+  it should "load the required env var into config" in {
+    assert("test" === appConfig.requiredEnvVar)
   }
 }
