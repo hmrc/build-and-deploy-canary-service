@@ -23,15 +23,19 @@ import uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig
 import za.co.absa.commons.scalatest.EnvFixture
 
 class AppConfigSpec extends AnyFlatSpec with EnvFixture {
-  private val env           = Environment.simple()
-  private val configuration = Configuration.load(env)
-  private val serviceConfig = new ServicesConfig(configuration)
+  private val env = Environment.simple()
 
+  private var configuration: Configuration = _
+  private var serviceConfig: ServicesConfig = _
   private var appConfig: AppConfig = _
 
   it should "load config okay when required settings are present" in {
     setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
 
+    configuration = Configuration.load(env) ++ Configuration(
+        "service.will.fail.to.start.without.this.sys.prop" -> 420
+    )
+    serviceConfig = new ServicesConfig(configuration)
     appConfig = new AppConfig(configuration, serviceConfig)
 
     assert("test" === System.getenv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR"))
@@ -39,6 +43,22 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
   }
 
   it should "throw an exception when the required env var is not set" in {
+    configuration = Configuration.load(env) ++ Configuration(
+        "service.will.fail.to.start.without.this.sys.prop" -> 420
+    )
+    serviceConfig = new ServicesConfig(configuration)
+
+    assertThrows[Exception] {
+        new AppConfig(configuration, serviceConfig)
+    }
+  }
+
+  it should "throw an exception when the required system property is not set" in {
+    setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
+
+    configuration = Configuration.load(env)
+    serviceConfig = new ServicesConfig(configuration)
+
     assertThrows[Exception] {
         new AppConfig(configuration, serviceConfig)
     }
