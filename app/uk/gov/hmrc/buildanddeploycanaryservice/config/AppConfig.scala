@@ -29,8 +29,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val cy: String            = "cy"
   val defaultLanguage: Lang = Lang(en)
 
-  val myString: String = config.getOptional[String]("some.config.key").getOrElse("")
-  val shouldFail: String = config.getOptional[String]("another.config.key").getOrElse("false")
   val requiredEnvVar: String = sys.env.getOrElse("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "")
   val requiredSystemProperty: String = config.getOptional[String]("service.will.fail.to.start.without.this.sys.prop").getOrElse("")
 
@@ -41,4 +39,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   if (requiredSystemProperty == "") {
     throw new Exception
   }
+
+  val someConfigKey: String = config.getOptional[String]("some.config.key").getOrElse("")
 }
