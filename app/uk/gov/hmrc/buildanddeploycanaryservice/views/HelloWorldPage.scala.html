@@ -23,5 +23,7 @@
 @layout(pageTitle = Some("build-and-deploy-canary-service")) {
     <h1 class="govuk-heading-xl">build-and-deploy-canary-service</h1>
     <p class="govuk-body">@{messages("service.text")}</p>
-    <p class="govuk-body">@{appConfig.myString}</p>
+    <p class="govuk-body">someConfigKey: @{appConfig.someConfigKey}</p>
+    <p class="govuk-body">requiredEnvVar: @{appConfig.requiredEnvVar}</p>
+    <p class="govuk-body">requiredEnvVar: @{appConfig.requiredSystemProperty}</p>
 }
