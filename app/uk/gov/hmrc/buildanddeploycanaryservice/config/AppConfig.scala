@@ -41,4 +41,13 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   }
 
   val someConfigKey: String = config.getOptional[String]("some.config.key").getOrElse("")
+
+  val base64StringWithQuotesStripped: String = config.getOptional[String]("base64.string.with.quotes.stripped").getOrElse("")
+
+  if (base64StringWithQuotesStripped == "") {
+    throw new Exception
+  }
+
+  val decodedBase64StringWithQuotesStripped = new String(java.util.Base64.getDecoder.decode(base64StringWithQuotesStripped))
+
 }
