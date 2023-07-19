@@ -34,6 +34,8 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
 
     configuration = Configuration.load(env).withFallback(Configuration(
         "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
+    )).withFallback(Configuration(
+        "base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"
     ))
     serviceConfig = new ServicesConfig(configuration)
     appConfig = new AppConfig(configuration, serviceConfig)
@@ -45,6 +47,8 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
   it should "throw an exception when the required env var is not set" in {
     configuration = Configuration.load(env).withFallback(Configuration(
         "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
+    )).withFallback(Configuration(
+        "base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"
     ))
     serviceConfig = new ServicesConfig(configuration)
 
@@ -56,7 +60,24 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
   it should "throw an exception when the required system property is not set" in {
     setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
 
-    configuration = Configuration.load(env)
+    configuration = Configuration.load(env).withFallback(Configuration(
+        "base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"
+    ))
+    serviceConfig = new ServicesConfig(configuration)
+
+    assertThrows[Exception] {
+        new AppConfig(configuration, serviceConfig)
+    }
+  }
+
+  it should "throw an exception if the base64 property is not decodeable" in {
+    setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
+
+    configuration = Configuration.load(env).withFallback(Configuration(
+        "base64.string.with.quotes.stripped" -> "'ZGVhZGJlZWYK'"
+    )).withFallback(Configuration(
+        "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
+    ))
     serviceConfig = new ServicesConfig(configuration)
 
     assertThrows[Exception] {

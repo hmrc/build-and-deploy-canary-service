@@ -24,6 +24,7 @@
     <h1 class="govuk-heading-xl">build-and-deploy-canary-service</h1>
     <p class="govuk-body">@{messages("service.text")}</p>
     <p class="govuk-body">someConfigKey: @{appConfig.someConfigKey}</p>
+    <p class="govuk-body">base64StringWithQuotesStripped: @{appConfig.decodedBase64StringWithQuotesStripped}</p>
     <p class="govuk-body">requiredEnvVar: @{appConfig.requiredEnvVar}</p>
-    <p class="govuk-body">requiredEnvVar: @{appConfig.requiredSystemProperty}</p>
+    <p class="govuk-body">requiredSystemProperty: @{appConfig.requiredSystemProperty}</p>
 }
