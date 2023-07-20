@@ -50,4 +50,10 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val decodedBase64StringWithQuotesStripped = new String(java.util.Base64.getDecoder.decode(base64StringWithQuotesStripped))
 
+  val cookieDeviceIdSecret: String = config.getOptional[String]("cookie.deviceId.secret").getOrElse("")
+ 
+  if (cookieDeviceIdSecret.startsWith("'")) {
+    throw new Exception
+  }
+
 }

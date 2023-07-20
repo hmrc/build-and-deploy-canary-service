@@ -84,4 +84,21 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
         new AppConfig(configuration, serviceConfig)
     }
   }
+
+    it should "throw an exception if the cookie deviceId secret property starts with a single quote" in {
+    setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
+
+    configuration = Configuration(
+        "cookie.deviceId.secret" -> "'bad'"
+    ).withFallback(Configuration.load(env)).withFallback(Configuration(
+        "base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"
+    )).withFallback(Configuration(
+        "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
+    ))
+    serviceConfig = new ServicesConfig(configuration)
+
+    assertThrows[Exception] {
+        new AppConfig(configuration, serviceConfig)
+    }
+  }
 }
