@@ -5,16 +5,16 @@ import sbt._
 
 object AppDependencies {
 
-  val bootstrapPlayVersion = "7.22.0"
+  val bootstrapPlayVersion = "8.1.0"
 
   val compile = Seq(
-    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % bootstrapPlayVersion,
-    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "7.23.0-play-28",
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-30" % bootstrapPlayVersion,
+    "uk.gov.hmrc" %% "play-frontend-hmrc-play-30" % "8.0.0",
   )
 
   val test = Seq(
-    "uk.gov.hmrc"        %% "bootstrap-test-play-28" % bootstrapPlayVersion % Test,
-    "org.jsoup"          %  "jsoup"                  % "1.13.1"             % Test,
-    "za.co.absa.commons" %% "commons"                % "1.3.0"              % Test
+    "uk.gov.hmrc"        %% "bootstrap-test-play-30" % bootstrapPlayVersion % Test,
+    "org.jsoup"          %  "jsoup"                  % "1.17.1"             % Test,
+    "za.co.absa.commons" %% "commons"                % "1.3.6"              % Test
   )
 }
