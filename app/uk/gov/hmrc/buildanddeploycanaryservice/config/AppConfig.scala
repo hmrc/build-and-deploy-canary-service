@@ -31,14 +31,15 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val requiredEnvVar: String = sys.env.getOrElse("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "")
   val requiredSystemProperty: String = config.getOptional[String]("service.will.fail.to.start.without.this.sys.prop").getOrElse("")
-
+ 
   if (requiredEnvVar == "") {
     throw new Exception
   }
-
+  
   if (requiredSystemProperty == "") {
     throw new Exception
   }
+  
 
   val someConfigKey: String = config.getOptional[String]("some.config.key").getOrElse("")
 
