@@ -3,6 +3,8 @@
 
 This service is used by the Build and Deploy team to test the build and deployment of a scala service into an environment.
 
+This `labs` branch is targetted by the canary pipeline in build. Please don't delete it.
+
 ## Requirements
 
 * AdoptOpenJDK Java 1.8.0_272
