@@ -31,17 +31,19 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val requiredEnvVar: String = sys.env.getOrElse("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "")
   val requiredSystemProperty: String = config.getOptional[String]("service.will.fail.to.start.without.this.sys.prop").getOrElse("")
- 
+
   if (requiredEnvVar == "") {
     throw new Exception
   }
-  
+
   if (requiredSystemProperty == "") {
     throw new Exception
   }
-  
+
 
   val someConfigKey: String = config.getOptional[String]("some.config.key").getOrElse("")
+
+  val favColour: String = config.getOptional[String]("fav.colour").getOrElse("")
 
   val base64StringWithQuotesStripped: String = config.getOptional[String]("base64.string.with.quotes.stripped").getOrElse("")
 
@@ -52,7 +54,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val decodedBase64StringWithQuotesStripped = new String(java.util.Base64.getDecoder.decode(base64StringWithQuotesStripped))
 
   val cookieDeviceIdSecret: String = config.getOptional[String]("cookie.deviceId.secret").getOrElse("")
- 
+
   if (cookieDeviceIdSecret.startsWith("'")) {
     throw new Exception
   }
