@@ -43,8 +43,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val someConfigKey: String = config.getOptional[String]("some.config.key").getOrElse("")
 
-  val favColour: String = config.getOptional[String]("fav.colour").getOrElse("")
-
   val base64StringWithQuotesStripped: String = config.getOptional[String]("base64.string.with.quotes.stripped").getOrElse("")
 
   if (base64StringWithQuotesStripped == "") {
