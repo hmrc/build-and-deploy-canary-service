@@ -16,18 +16,24 @@
 
 package uk.gov.hmrc.buildanddeploycanaryservice.config
 
-import javax.inject.{Inject, Singleton}
-
 import play.api.i18n.MessagesApi
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import uk.gov.hmrc.buildanddeploycanaryservice.views.html.ErrorTemplate
 
-@Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
-    extends FrontendErrorHandler {
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    errorTemplate(pageTitle, heading, message)
+@Singleton
+class ErrorHandler @Inject()(
+  errorTemplate: ErrorTemplate,
+  override val messagesApi: MessagesApi
+)(implicit
+  appConfig: AppConfig,
+  override val ec: ExecutionContext
+) extends FrontendErrorHandler {
+
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(using request: RequestHeader): Future[Html] =
+    Future.successful(errorTemplate(pageTitle, heading, message))
 }

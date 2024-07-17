@@ -20,85 +20,72 @@ import org.scalatest.flatspec.AnyFlatSpec
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig
-import za.co.absa.commons.scalatest.EnvFixture
 
 class AppConfigSpec extends AnyFlatSpec with EnvFixture {
   private val env = Environment.simple()
 
-  private var configuration: Configuration = _
-  private var serviceConfig: ServicesConfig = _
-  private var appConfig: AppConfig = _
-
   it should "load config okay when required settings are present" in {
     setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
 
-    configuration = Configuration.load(env).withFallback(Configuration(
+    val configuration =
+      Configuration.load(env).withFallback(Configuration(
         "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
     )).withFallback(Configuration(
         "base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"
     ))
-    serviceConfig = new ServicesConfig(configuration)
-    appConfig = new AppConfig(configuration, serviceConfig)
+    val appConfig = new AppConfig(configuration)
 
     assert("test" === System.getenv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR"))
     assert("test" === appConfig.requiredEnvVar)
   }
 
   it should "throw an exception when the required env var is not set" in {
-    configuration = Configuration.load(env).withFallback(Configuration(
-        "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
-    )).withFallback(Configuration(
-        "base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"
-    ))
-    serviceConfig = new ServicesConfig(configuration)
+    val configuration =
+      Configuration.load(env)
+        .withFallback(Configuration("service.will.fail.to.start.without.this.sys.prop" -> "super-important"))
+        .withFallback(Configuration("base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"))
 
     assertThrows[Exception] {
-        new AppConfig(configuration, serviceConfig)
+      new AppConfig(configuration)
     }
   }
 
   it should "throw an exception when the required system property is not set" in {
     setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
 
-    configuration = Configuration.load(env).withFallback(Configuration(
-        "base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"
-    ))
-    serviceConfig = new ServicesConfig(configuration)
+    val configuration =
+      Configuration.load(env)
+        .withFallback(Configuration("base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"))
 
     assertThrows[Exception] {
-        new AppConfig(configuration, serviceConfig)
+        new AppConfig(configuration)
     }
   }
 
   it should "throw an exception if the base64 property is not decodeable" in {
     setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
 
-    configuration = Configuration.load(env).withFallback(Configuration(
-        "base64.string.with.quotes.stripped" -> "'ZGVhZGJlZWYK'"
-    )).withFallback(Configuration(
-        "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
-    ))
-    serviceConfig = new ServicesConfig(configuration)
+    val configuration =
+      Configuration.load(env)
+        .withFallback(Configuration("base64.string.with.quotes.stripped" -> "'ZGVhZGJlZWYK'"))
+        .withFallback(Configuration("service.will.fail.to.start.without.this.sys.prop" -> "super-important"))
 
     assertThrows[Exception] {
-        new AppConfig(configuration, serviceConfig)
+      new AppConfig(configuration)
     }
   }
 
-    it should "throw an exception if the cookie deviceId secret property starts with a single quote" in {
+  it should "throw an exception if the cookie deviceId secret property starts with a single quote" in {
     setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
 
-    configuration = Configuration(
-        "cookie.deviceId.secret" -> "'bad'"
-    ).withFallback(Configuration.load(env)).withFallback(Configuration(
-        "base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"
-    )).withFallback(Configuration(
-        "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
-    ))
-    serviceConfig = new ServicesConfig(configuration)
+    val configuration =
+      Configuration("cookie.deviceId.secret" -> "'bad'")
+        .withFallback(Configuration.load(env))
+        .withFallback(Configuration("base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"))
+        .withFallback(Configuration("service.will.fail.to.start.without.this.sys.prop" -> "super-important"))
 
     assertThrows[Exception] {
-        new AppConfig(configuration, serviceConfig)
+      new AppConfig(configuration)
     }
   }
 }
