@@ -16,25 +16,23 @@
 
 package uk.gov.hmrc.buildanddeploycanaryservice.controllers
 
-import javax.inject.{Inject, Singleton}
-
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, MessagesRequest}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig
 import uk.gov.hmrc.buildanddeploycanaryservice.views.html.HelloWorldPage
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
 class HelloWorldController @Inject()(
-  appConfig: AppConfig,
-  mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage)
-    extends FrontendController(mcc) {
-  implicit val config: AppConfig = appConfig
+  mcc           : MessagesControllerComponents,
+  helloWorldPage: HelloWorldPage
+)(using
+  appConfig     : AppConfig
+) extends FrontendController(mcc):
 
-  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
-  }
-
-}
+  val helloWorld: Action[AnyContent] =
+    Action.async: request =>
+      given MessagesRequest[_] = request
+      Future.successful(Ok(helloWorldPage()))

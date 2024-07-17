@@ -19,8 +19,6 @@ package uk.gov.hmrc.buildanddeploycanaryservice
 import com.google.inject.AbstractModule
 import uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig
 
-class Module extends AbstractModule {
-  override def configure(): Unit = {
+class Module extends AbstractModule:
+  override def configure(): Unit =
     bind(classOf[AppConfig]).asEagerSingleton()
-  }
-}

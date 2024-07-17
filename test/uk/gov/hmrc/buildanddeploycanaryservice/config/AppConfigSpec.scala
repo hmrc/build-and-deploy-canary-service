@@ -18,22 +18,19 @@ package uk.gov.hmrc.buildanddeploycanaryservice.config
 
 import org.scalatest.flatspec.AnyFlatSpec
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig
 
-class AppConfigSpec extends AnyFlatSpec with EnvFixture {
+class AppConfigSpec extends AnyFlatSpec with EnvFixture:
   private val env = Environment.simple()
 
   it should "load config okay when required settings are present" in {
     setEnv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "test")
 
     val configuration =
-      Configuration.load(env).withFallback(Configuration(
-        "service.will.fail.to.start.without.this.sys.prop" -> "super-important"
-    )).withFallback(Configuration(
-        "base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"
-    ))
-    val appConfig = new AppConfig(configuration)
+      Configuration.load(env)
+        .withFallback(Configuration("service.will.fail.to.start.without.this.sys.prop" -> "super-important"))
+        .withFallback(Configuration("base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"))
+
+    val appConfig = AppConfig(configuration)
 
     assert("test" === System.getenv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR"))
     assert("test" === appConfig.requiredEnvVar)
@@ -45,9 +42,8 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
         .withFallback(Configuration("service.will.fail.to.start.without.this.sys.prop" -> "super-important"))
         .withFallback(Configuration("base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"))
 
-    assertThrows[Exception] {
-      new AppConfig(configuration)
-    }
+    assertThrows[Exception]:
+      AppConfig(configuration)
   }
 
   it should "throw an exception when the required system property is not set" in {
@@ -57,9 +53,8 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
       Configuration.load(env)
         .withFallback(Configuration("base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"))
 
-    assertThrows[Exception] {
-        new AppConfig(configuration)
-    }
+    assertThrows[Exception]:
+      AppConfig(configuration)
   }
 
   it should "throw an exception if the base64 property is not decodeable" in {
@@ -70,9 +65,8 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
         .withFallback(Configuration("base64.string.with.quotes.stripped" -> "'ZGVhZGJlZWYK'"))
         .withFallback(Configuration("service.will.fail.to.start.without.this.sys.prop" -> "super-important"))
 
-    assertThrows[Exception] {
-      new AppConfig(configuration)
-    }
+    assertThrows[Exception]:
+      AppConfig(configuration)
   }
 
   it should "throw an exception if the cookie deviceId secret property starts with a single quote" in {
@@ -84,8 +78,6 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture {
         .withFallback(Configuration("base64.string.with.quotes.stripped" -> "ZGVhZGJlZWYK"))
         .withFallback(Configuration("service.will.fail.to.start.without.this.sys.prop" -> "super-important"))
 
-    assertThrows[Exception] {
-      new AppConfig(configuration)
-    }
+    assertThrows[Exception]:
+      AppConfig(configuration)
   }
-}

@@ -18,37 +18,32 @@ package uk.gov.hmrc.buildanddeploycanaryservice.config
 
 import org.scalatest.{BeforeAndAfterEach, Suite}
 
-import scala.collection.JavaConverters._
-import scala.reflect.ClassTag
-import scala.util.Try
+import scala.jdk.CollectionConverters.*
 
-trait EnvFixture extends BeforeAndAfterEach {
+trait EnvFixture extends BeforeAndAfterEach:
   this: Suite =>
 
-  private val mutableEnvVars = new AsModifiable(System.getenv())
+  private val mutableEnvVars = AsModifiable(System.getenv())
 
   private var keysBefore: Set[String] = _
 
-  override protected def beforeEach(): Unit = {
+  override protected def beforeEach(): Unit =
     this.keysBefore = mutableEnvVars.keys
     super.beforeEach()
-  }
 
-  override protected def afterEach(): Unit = {
+  override protected def afterEach(): Unit =
     try super.afterEach()
-    finally {
+    finally
       val keysAfter = mutableEnvVars.keys
       val keysToRemove = keysAfter -- keysBefore
-      for {
+      for
         k <- keysToRemove
-      } mutableEnvVars.remove(k)
-    }
-  }
+      yield mutableEnvVars.remove(k)
 
   def setEnv(key: String, value: String): Unit =
     mutableEnvVars.put(key, value)
 
-  private abstract class MapHandler {
+  private abstract class MapHandler:
     protected def m: java.util.Map[String, String]
 
     final def keys: Set[String] =
@@ -59,13 +54,9 @@ trait EnvFixture extends BeforeAndAfterEach {
 
     final def remove(k: String): Unit =
       m.remove(k)
-  }
 
-  private class AsModifiable(unmodifiableMap: java.util.Map[String, String]) extends MapHandler {
-    override protected val m: java.util.Map[String, String] = {
+  private class AsModifiable(unmodifiableMap: java.util.Map[String, String]) extends MapHandler:
+    override protected val m: java.util.Map[String, String] =
       val field = unmodifiableMap.getClass.getDeclaredField("m")
       field.setAccessible(true)
       field.get(unmodifiableMap).asInstanceOf[java.util.Map[String, String]]
-    }
-  }
-}
