@@ -18,49 +18,60 @@ package uk.gov.hmrc.buildanddeploycanaryservice.config
 
 import play.api.Configuration
 import play.api.i18n.Lang
+import com.typesafe.config.ConfigException
 
 import javax.inject.{Inject, Singleton}
+import scala.util.Try
 
 @Singleton
 class AppConfig @Inject()(config: Configuration):
 
   val welshLanguageSupportEnabled: Boolean =
-    config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
+    config.get[Boolean]("features.welsh-language-support")
 
   val en: String            = "en"
   val cy: String            = "cy"
   val defaultLanguage: Lang = Lang(en)
 
-  val requiredEnvVar: String =
-    sys.env.getOrElse("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR", "")
+  val someConfigKey: Option[String] =
+    config.getOptional[String]("some.config.key")
 
-  val requiredSystemProperty: String =
-    config.getOptional[String]("service.will.fail.to.start.without.this.sys.prop").getOrElse("")
+  val favColour: Option[String] =
+    config.getOptional[String]("fav.colour")
 
-  if (requiredEnvVar == "")
-    throw new Exception
+  val assertExpectedConfig: Boolean =
+    config.get[Boolean]("assert.expected.config")
 
-  if (requiredSystemProperty == "")
-    throw new Exception
+  val requiredEnvVarKey = "SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR"
+  val requiredEnvVar: Option[String] =
+    Some(sys.env.getOrElse(requiredEnvVarKey, ""))
+      .filter(_ != "")
 
+  val requiredSystemPropertyKey = "service.will.fail.to.start.without.this.sys.prop"
+  val requiredSystemProperty: Option[String] =
+    config.getOptional[String](requiredSystemPropertyKey)
 
-  val someConfigKey: String =
-    config.getOptional[String]("some.config.key").getOrElse("")
-
-  val favColour: String =
-    config.getOptional[String]("fav.colour").getOrElse("")
-
-  val base64StringWithQuotesStripped: String =
-    config.getOptional[String]("base64.string.with.quotes.stripped").getOrElse("")
-
-  if (base64StringWithQuotesStripped == "")
-    throw new Exception
+  val base64StringWithQuotesStrippedKey = "base64.string.with.quotes.stripped"
+  val base64StringWithQuotesStripped: Option[String] =
+    config.getOptional[String](base64StringWithQuotesStrippedKey)
 
   val decodedBase64StringWithQuotesStripped =
-    new String(java.util.Base64.getDecoder.decode(base64StringWithQuotesStripped))
+    base64StringWithQuotesStripped.flatMap(s =>
+      Try(String(java.util.Base64.getDecoder.decode(s))).toOption
+    )
 
-  val cookieDeviceIdSecret: String =
-    config.getOptional[String]("cookie.deviceId.secret").getOrElse("")
+  val cookieDeviceIdSecretKey = "cookie.deviceId.secret"
+  val cookieDeviceIdSecret: Option[String] =
+    config.getOptional[String](cookieDeviceIdSecretKey)
 
-  if (cookieDeviceIdSecret.startsWith("'"))
-    throw new Exception
+  if assertExpectedConfig then
+    val errors = Seq(
+      Option(s"env var '$requiredEnvVarKey' is missing").filter(_ => requiredEnvVar.isEmpty),
+      Option(s"system property '$requiredSystemPropertyKey' is missing").filter(_ => requiredSystemProperty.isEmpty),
+      Option(s"system property '$base64StringWithQuotesStrippedKey' is missing").filter(_ => base64StringWithQuotesStripped.isEmpty),
+      Option(s"system property '$base64StringWithQuotesStrippedKey' is not a valid base64 value").filter(_ => decodedBase64StringWithQuotesStripped.isEmpty),
+      Option(s"config '$cookieDeviceIdSecretKey' is missing or starts with a quote").filter(_ => cookieDeviceIdSecret.exists(_.startsWith("'")))
+    ).flatten
+
+    if errors.nonEmpty then
+      throw ConfigException.Generic(s"The following errors were found:\n${errors.map(" - " + _).mkString("\n")}")

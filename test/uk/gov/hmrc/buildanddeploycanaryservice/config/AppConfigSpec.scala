@@ -32,8 +32,8 @@ class AppConfigSpec extends AnyFlatSpec with EnvFixture:
 
     val appConfig = AppConfig(configuration)
 
-    assert("test" === System.getenv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR"))
-    assert("test" === appConfig.requiredEnvVar)
+    assert(System.getenv("SERVICE_WILL_FAIL_TO_START_WITHOUT_THIS_ENV_VAR") === "test")
+    assert(appConfig.requiredEnvVar === Some("test"))
   }
 
   it should "throw an exception when the required env var is not set" in {
