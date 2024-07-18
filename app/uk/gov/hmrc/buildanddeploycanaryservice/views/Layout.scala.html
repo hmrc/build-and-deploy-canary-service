@@ -14,22 +14,19 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig
-@import uk.gov.hmrc.buildanddeploycanaryservice.views.html.LanguageSelect
-
 @this(
   govukLayout       : GovukLayout,
   head              : Head,
   hmrcStandardFooter: HmrcStandardFooter,
-  languageSelect    : LanguageSelect
+  languageSelect    : CanaryLanguageSelect
 )
 @(pageTitle   : Option[String] = None,
   headBlock   : Option[Html]   = None,
   scriptsBlock: Option[Html]   = None
 )(contentBlock: Html
 )(implicit
-  request: Request[_],
-  messages: Messages,
+  request  : RequestHeader,
+  messages : Messages,
   appConfig: AppConfig
 )
 
