@@ -4,7 +4,7 @@ lazy val microservice = Project("build-and-deploy-canary-service", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .settings(
     majorVersion              := 0,
-    scalaVersion              := "3.3.3",
+    scalaVersion              := "3.3.4",
     libraryDependencies       ++= AppDependencies.compile ++ AppDependencies.test,
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.buildanddeploycanaryservice.config.AppConfig",
