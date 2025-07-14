@@ -12,8 +12,8 @@ lazy val microservice = Project("build-and-deploy-canary-service", file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
     ),
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-    scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s",
+    scalacOptions += "-Wconf:msg=unused import&src=html/.*:s",
+    scalacOptions += "-Wconf:src=routes/.*:s",
+    scalacOptions += "-Wconf:msg=Flag.*repeatedly:s",
     Test / javaOptions ++= Seq("--add-opens", "java.base/java.util=ALL-UNNAMED") // required for reflection in EnvFixture
   )
-  .settings(resolvers += Resolver.jcenterRepo)
