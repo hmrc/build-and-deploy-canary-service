@@ -18,6 +18,7 @@ For service dependencies see [AppDependencies.scala](./project/AppDependencies.s
 
 For sbt plugins see [plugins.sbt](./project/plugins.sbt)
 
+
 After updating either the sbt version, sbt plugins, or service dependencies confirm the service compiles and tests pass with:
 
     sbt clean test
