@@ -10,6 +10,8 @@ This service is used by the Build and Deploy team to test the build and deployme
 
 ## Updating dependencies and sbt
 
+If you don't have Scala/Java installed follow the MDTP Handbook instructions: [Install Java and Scala using SDKMAN!](https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/install-java-scala-using-sdkman.html#install-java-and-scala-using-sdkman)
+
 To find dependencies that may need to be updated and the latest sbt version, the [Tax Platform Catalogue](https://catalogue.tax.service.gov.uk/repositories/build-and-deploy-canary-service) will show outdated dependencies and sbt version for the running service.
 
 For sbt version see [build.properties](./project/build.properties)
@@ -21,6 +23,8 @@ For sbt plugins see [plugins.sbt](./project/plugins.sbt)
 After updating either the sbt version, sbt plugins, or service dependencies confirm the service compiles and tests pass with:
 
     sbt clean test
+
+Or, you can push to GitHub and use the PR Builder to test. 
 
 ## Smoke testing configuration
 
